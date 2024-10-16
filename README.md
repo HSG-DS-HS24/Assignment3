@@ -1,6 +1,8 @@
 # Spark Cluster Using Docker
 
-This document is easier to read of you use a preview tool in your IDE, [e.g. VS Code](https://itsfoss.com/vs-code-markdown-preview/)
+Recommendations for this repository:
+- This document is easier to read of you use a preview tool in your IDE, [e.g. VS Code](https://itsfoss.com/vs-code-markdown-preview/).
+- If you want to hand-in the assignment via GitHub, create a private fork of this repository as described in [Assignment1](https://learning.unisg.ch/courses/21277/assignments/77935).
 
 ## Task 1
 
