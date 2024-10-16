@@ -28,7 +28,7 @@ You might man to check the section `Live Demo` in the Appendix before proceeding
 
 #### Required on Windows: Ensure line endings of the startup script
 
-[Line endings on Windows and Unix are different.](https://stackoverflow.com/a/426404). Some files are mounted into the container and must be executable there. This is not possible, if the line endings do not match. To ensure that they do, open the folder that contains the assignment package in your IDE, e.g. in VS Code (see Figure 1). Check the line endings symbol and click on it _if it show_ `CRLF` and set it to `LF`  (see Figure 2). Save all files.
+[Line endings on Windows and Unix are different.](https://stackoverflow.com/a/426404). Some files are mounted into the container and must be executable there. This is not possible, if the line endings do not match. To ensure that they do, open the folder that contains the assignment package in your IDE, e.g. in VS Code (see Figure 1). Check the line endings symbol and click on it _if it shows_ `CRLF` and set it to `LF`  (see Figure 2). Save all files.
 
 ![Files that need adjustment](assets/doc/line-endings-files.png)
 
