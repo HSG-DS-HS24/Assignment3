@@ -18,4 +18,4 @@ if [ -n "$ENSURE_INPUT_DIR" ]; then
 
   fi
 fi
-# Stop - modified by HSG-ICS Interactions group  
+# Stop - modified by HSG-ICS Interactions group

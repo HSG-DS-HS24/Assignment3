@@ -28,7 +28,7 @@ You might man to check the section `Live Demo` in the Appendix before proceeding
 
 #### Required on Windows: Ensure line endings of the startup script
 
-[Line endings on Windows and Unix are different.](https://stackoverflow.com/a/426404). Some files are mounted into the container and must be executable there. This is not possible, if the line endings do not match. To ensure that they do, open the folder that contains the assignment package in your IDE, e.g. in VS Code (see Figure 1). Check the line endings symbol and click on it _if it show_ `CRLF` and set it to `LF`  (see Figure 2). Save all files.
+[Line endings on Windows and Unix are different.](https://stackoverflow.com/a/426404). Some files are mounted into the container and must be executable there. This is not possible, if the line endings do not match. To ensure that they do, open the folder that contains the assignment package in your IDE, e.g. in VS Code (see Figure 1). Check the line endings symbol and click on it _if it shows_ `CRLF` and set it to `LF`  (see Figure 2). Save all files.
 
 ![Files that need adjustment](assets/doc/line-endings-files.png)
 
@@ -54,12 +54,12 @@ The following apps can now be visited:
 
 - Hadoop Namenode: http://locahost:9870
   - Or http://namenode:9870 if DNS is configured or if you are in the container
-- Hadoop Datanode: http://172.23.0.3:9864
-  - Or http://locahost:9864 if DNS is configured or if you are in the container
+- Hadoop Datanode: http://locahost:9864
+  - Or http://datanode:9864 if DNS is configured or if you are in the container
 
 #### Interact with the file system
 
-On `http://172.23.0.2:9870`, in the upper right corner go to `Utilities->Browse the file system`. Use the Buttons `Create Directory`, `Upload Files`, `Cut & Paste` and `Parent Directory` to interact with the file system.
+On `http://localhost:9870`, in the upper right corner go to `Utilities->Browse the file system`. Use the Buttons `Create Directory`, `Upload Files`, `Cut & Paste` and `Parent Directory` to interact with the file system.
 
 #### Stop
 
@@ -85,8 +85,8 @@ docker compose -f docker-compose.hadoop.yaml -f docker-compose.spark.yaml up --f
 
 - Spark Master: http://localhost:8080
   - Or http://spark-master:8080 if DNS is configured or if you are in the container
-- Spark History Server: http://172.23.0.10:18080/
-  - Or http://localhost:8080 if DNS is configured or if you are in the container
+- Spark History Server: http://localhost:18080/
+  - Or http://spark-master:18080 if DNS is configured or if you are in the container
 
 > _Note_:
 > These UIs are for monitoring and inspection. They do not provide a feature to submit applications
@@ -140,16 +140,30 @@ By now you created three artifacts:
 3. The output file in CSV
 
 Make sure they are persistent. 1. and 2. are taken care of, if they are in `BCS-DS-Assignment-Package`. Download 3. via the HDFS WebUI.
-<!-- 3. In your PageRank implementation with:
-    1. Adjust the input path so it matches the layout of this assignment and the filename you chose
-    2. Change the output so the file stores in `/output`. You might want to make sure the output filename is unique or that outputs from potential previous runs are removed. -->
 
 ## Task2: Count words using Count words using Resilient Distributed Datasets (RDD)
 
 1. Follow the comments given in the [project template](tasks/app/src/main/java/com/assignment3/spark/Task2.java).
     - Your implementation might generate multiple output part files depending on the number of partitions Spark uses. Use output consolidation methods to consolidate your output into a single output file.
 2. Store the output as file on HDFS/ and download from there.
-3. Test the solution using the [provided test file](tasks/app/src/main/java/com/assignment3/spark/Task2Check.java).
+3. Test the solution using the [provided test file](tasks/app/src/main/java/com/assignment3/spark/Task2Check.java) like this:
+    ```txt
+    root@spark-client:/app/tasks# ./gradlew run -PchooseMain=com.assignment3.spark.Task2Check --args="/app/output/output-task2.txt /app/output/output-task2-check.txt"
+
+    > Task :app:run
+    Both files are NOT the same!
+
+    BUILD SUCCESSFUL in 706ms
+    2 actionable tasks: 1 executed, 1 up-to-date
+    root@spark-client:/app/tasks# ./gradlew run -PchooseMain=com.assignment3.spark.Task2Check --args="/app/output/output-task2.txt /app/output/output-task2-check.txt"
+
+    > Task :app:run
+    Both files are the same!
+
+    BUILD SUCCESSFUL in 1s
+    2 actionable tasks: 1 executed, 1 up-to-date
+    root@spark-client:/app/tasks#
+    ```
 
 ### Finalize
 
