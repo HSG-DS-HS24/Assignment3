@@ -1,0 +1,45 @@
+- hosts: all
+  tasks:
+    - name: Set hadoop checksum based on architecture
+      set_fact:
+        hadoop_checksum: |
+          {% if ansible_architecture == 'x86_64' %}
+          sha512:de3eaca2e0517e4b569a88b63c89fae19cb8ac6c01ff990f1ff8f0cc0f3128c8e8a23db01577ca562a0e0bb1b4a3889f8c74384e609cd55e537aada3dcaa9f8a
+          {% elif ansible_architecture == 'aarch64' %}
+          sha512:b0a485c5ae0d97b08285bb83a3dd78b834153b2bd53f96ac301852862ccaff139f2c547aee808d5ad4afdc3a204b1c3b6ba459ea83ebf2779e9c129f37c69059
+          {% else %}
+            ''
+          {% endif %}
+        hadoop_archive_suffix: |
+          {% if ansible_architecture == 'x86_64' %}
+          .tar.gz
+          {% elif ansible_architecture == 'aarch64' %}
+          -aarch64.tar.gz
+          {% else %}
+            ''
+          {% endif %}
+
+    - ansible.builtin.include_role:
+        name: andrewrothstein.hadoop
+      vars:
+        # Use mirror suggested by apache
+        hadoop_mirror: https://dlcdn.apache.org/hadoop/common
+        hadoop_parent_dir: /opt
+        hadoop_version: 3.3.6
+        hadoop_archive: '{{ hadoop_name }}{{ hadoop_archive_suffix }}'
+        hadoop_checksums:
+          "3.3.6": '{{ hadoop_checksum }}'
+          # x64
+          # "3.3.6": sha512:de3eaca2e0517e4b569a88b63c89fae19cb8ac6c01ff990f1ff8f0cc0f3128c8e8a23db01577ca562a0e0bb1b4a3889f8c74384e609cd55e537aada3dcaa9f8a
+          # aarch64
+          # "3.3.6": sha512:b0a485c5ae0d97b08285bb83a3dd78b834153b2bd53f96ac301852862ccaff139f2c547aee808d5ad4afdc3a204b1c3b6ba459ea83ebf2779e9c129f37c69059
+        # openjdk_ver:
+        #   major: 11
+        #   minor: 0
+        #   patch: "3"
+        #   b: "7"
+        # openjdk_arch: aarch64
+        # openjdk_checksums:
+        #   11.0.3_7:
+        #     jre:
+        #       linux_aarch64: sha256:de31fab70640c6d5099de5fc8fa8b4d6b484a7352fa48a9fafbdc088ca708564
