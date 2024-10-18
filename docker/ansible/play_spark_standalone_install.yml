@@ -8,7 +8,7 @@
           {% elif ansible_architecture == 'aarch64' %}
           sha512:b0a485c5ae0d97b08285bb83a3dd78b834153b2bd53f96ac301852862ccaff139f2c547aee808d5ad4afdc3a204b1c3b6ba459ea83ebf2779e9c129f37c69059
           {% else %}
-            ''
+          ''
           {% endif %}
         hadoop_archive_suffix: |
           {% if ansible_architecture == 'x86_64' %}
@@ -16,30 +16,80 @@
           {% elif ansible_architecture == 'aarch64' %}
           -aarch64.tar.gz
           {% else %}
-            ''
+          ''
           {% endif %}
-
+        jdk_arch: |
+          {% if ansible_architecture == 'x86_64' %}
+          x64
+          {% elif ansible_architecture == 'aarch64' %}
+          aarch64
+          {% else %}
+          ''
+          {% endif %}
+        jdk_checksum: |
+          {% if ansible_architecture == 'x86_64' %}
+          sha256:94f20ca8ea97773571492e622563883b8869438a015d02df6028180dd9acc24d
+          {% elif ansible_architecture == 'aarch64' %}
+          sha256:6e8b6b037148cf20a284b5b257ec7bfdf9cc31ccc87778d0dfd95a2fddf228d4 
+          {% else %}
+          ''
+          {% endif %}    
+    - set_fact: 
+        jdk_checksums:
+            '15.0.2_7':
+                jdk:
+                  linux_x64: "{{jdk_checksum}}"
+      when: ansible_architecture == "x86_64" 
+    - set_fact: 
+        jdk_checksums:
+            '15.0.2_7':
+                jdk:
+                  linux_aarch64: "{{jdk_checksum}}"
+      when: ansible_architecture == "aarch64" 
+    
     - ansible.builtin.include_role:
         name: andrewrothstein.hadoop
       vars:
         # Use mirror suggested by apache
-        hadoop_mirror: https://dlcdn.apache.org/hadoop/common
+        # hadoop_mirror: https://dlcdn.apache.org/hadoop/common
         hadoop_parent_dir: /opt
         hadoop_version: 3.3.6
-        hadoop_archive: '{{ hadoop_name }}{{ hadoop_archive_suffix }}'
+        hadoop_archive: '{{ hadoop_name }}{{ hadoop_archive_suffix | trim }}'
         hadoop_checksums:
           "3.3.6": '{{ hadoop_checksum }}'
-          # x64
-          # "3.3.6": sha512:de3eaca2e0517e4b569a88b63c89fae19cb8ac6c01ff990f1ff8f0cc0f3128c8e8a23db01577ca562a0e0bb1b4a3889f8c74384e609cd55e537aada3dcaa9f8a
-          # aarch64
-          # "3.3.6": sha512:b0a485c5ae0d97b08285bb83a3dd78b834153b2bd53f96ac301852862ccaff139f2c547aee808d5ad4afdc3a204b1c3b6ba459ea83ebf2779e9c129f37c69059
-        # openjdk_ver:
-        #   major: 11
-        #   minor: 0
-        #   patch: "3"
-        #   b: "7"
-        # openjdk_arch: aarch64
-        # openjdk_checksums:
-        #   11.0.3_7:
-        #     jre:
-        #       linux_aarch64: sha256:de31fab70640c6d5099de5fc8fa8b4d6b484a7352fa48a9fafbdc088ca708564
+        openjdk_arch: '{{ jdk_arch | trim }}'
+        openjdk_app: jdk
+        openjdk_checksums: '{{ jdk_checksums }}'
+
+
+# - hosts: all
+#   become: true
+#   pre_tasks:
+#   #   # - name: Curl the download site and extract the suggested download link
+#   #   #   # https://www.apache.org/dyn/closer.cgi/hadoop/common/hadoop-3.3.6/hadoop-3.3.6-aarch64.tar.gz
+#   #   #     # wget -qO- "https://www.apache.org/dyn/closer.cgi/hadoop/common/{{ hadoop_name }}/{{ hadoop_name }}{{ hadoop_archive_suffix | trim }}" | grep -A 2 "We suggest the following location for your download:" | grep -oP '(?<=href=")[^"]*'
+#   #   #   shell: |
+#   #   #     wget -qO- "https://www.apache.org/dyn/closer.cgi/hadoop/common/{{ hadoop_name }}/{{ hadoop_name }}{{ hadoop_archive_suffix | trim }}" | grep -A 2 "We suggest the following location for your download:" | grep -oP '(?<=href=")[^"]*'
+#   #   #   register: download_link
+
+#     - name: Debug the extracted download link
+#       debug:
+#         var: '{{openjdk_checksums}}'
+
+#   roles:
+#     - andrewrothstein.hadoop
+#   vars:
+#     # Use mirror suggested by apache
+#     # hadoop_mirror: https://dlcdn.apache.org/hadoop/common
+#     hadoop_parent_dir: /opt
+#     hadoop_version: 3.3.6
+#     hadoop_archive: '{{ hadoop_name }}{{ hadoop_archive_suffix | trim }}'
+#     hadoop_checksums:
+#       "3.3.6": '{{ hadoop_checksum }}'
+#     openjdk_arch: '{{ jdk_arch | trim }}'
+#     openjdk_app: 'jdk'
+#     openjdk_checksums:
+#         15.0.2_7:
+#           jdk:
+#             "{'linux_{{ jdk_arch | trim}}':'{{jdk_checksum}}'}"
+
