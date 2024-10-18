@@ -96,8 +96,10 @@ if [ -n "$KERBEROS_ENABLED" ]; then
     sed "s/SERVER/$KERBEROS_SERVER/g" "$DIR"/krb5.conf | sudo tee /etc/krb5.conf
 fi
 
+# Start - Modified by HSG-ICS Interactions group
 #To avoid docker volume permission problems
-sudo chmod o+rwx /data
+# sudo chmod o+rwx /data
+# Stop - Modified by HSG-ICS Interactions group
 
 # Start - Modified by HSG-ICS Interactions group
 # the suggested env file https://github.com/apache/hadoop/blob/docker-hadoop-3/config
