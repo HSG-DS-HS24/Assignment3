@@ -57,4 +57,9 @@
         <!-- Container are not reachable by IP on Win/Mac -->
         <value>localhost</value>
     </property>
+    <property>
+        <name>dfs.namenode.hostname</name>
+        <!-- Container are not reachable by IP on Win/Mac -->
+        <value>localhost</value>
+    </property>
 </configuration>
