@@ -1,9 +1,7 @@
 services:
 
   namenode:
-    image: apache/hadoop:3
-    # apache/hadoop images are not multi-platform
-    platform: "linux/amd64"
+    image: galess/hadoop:3
     hostname: namenode
     container_name: namenode
     # See https://stackoverflow.com/a/72109503
@@ -13,6 +11,8 @@ services:
         soft: 65536
         hard: 65536
     command: ["hdfs", "namenode"]
+    # The image does not have the starter script at build time
+    entrypoint: ["/opt/starter.sh"]
     environment:
       - ENSURE_NAMENODE_DIR=/tmp/hadoop-root/dfs/name
       - SPARK_USER=root
@@ -32,9 +32,7 @@ services:
 
 
   datanode:
-    image: apache/hadoop:3
-    # apache/hadoop images are not multi-platform
-    platform: "linux/amd64"
+    image: galess/hadoop:3
     depends_on:
       - namenode
     hostname: datanode
@@ -44,6 +42,8 @@ services:
       nofile:
         soft: 65536
         hard: 65536
+    # The image does not have the starter script at build time
+    # The starter script for this node contains steps specific to the datanode
     entrypoint: ["/opt/starter-new.sh"]
     environment:
         - ENSURE_INPUT_DIR=/input
